@@ -12,10 +12,25 @@ type Document struct{
 
 func search(index map[string][]string, query string) []string{
 	words := strings.Fields(query)
-	for _, word := range words {
-		fmt.Println(word, "->", index[word])
+	// for _, word := range words {
+	// 	fmt.Println(word, "->", index[word])
+	// }
+	// return nil
+
+	result := []string{}
+
+	first := index[words[0]]
+	second := index[words[1]]
+	
+	for _, id1 := range first{
+		for _, id2 := range second {
+			if id1 == id2 {
+				result = append(result, id1)
+			}
+		}
 	}
-	return nil
+
+	return result
 }
 
 func main(){
