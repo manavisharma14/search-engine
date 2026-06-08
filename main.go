@@ -81,7 +81,7 @@ func searchAND(index map[string][]string, query string) [] string{
 
 func main(){
 	docs:= []Document{
-		{ID: "1", Text: "go is fast"},
+		{ID: "1", Text: "go go go is fast"},
 		{ID: "2", Text: "go is simple"},
 		{ID: "3", Text: "search engines use indexes"},
 	}
@@ -96,8 +96,10 @@ func main(){
 		}
 	}
 
-	orResults := searchOR(index, "go simple")
-	andResults := searchAND(index, "go simple")
+	fmt.Println(index["go"])
+
+	orResults := searchOR(index, "go")
+	// andResults := searchAND(index, "go")
 
 	for _, id := range orResults{
 		for _, doc := range docs{
@@ -107,13 +109,13 @@ func main(){
 		}
 	}
 
-	for _, id := range andResults{
-		for _, doc := range docs{
-			if doc.ID == id {
-				fmt.Println(doc.Text)
-			}
-		}
-	}
+	// for _, id := range andResults{
+	// 	for _, doc := range docs{
+	// 		if doc.ID == id {
+	// 			fmt.Println(doc.Text)
+	// 		}
+	// 	}
+	// }
 
 
 
