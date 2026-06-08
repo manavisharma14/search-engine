@@ -31,11 +31,12 @@ func search(index map[string][]string, query string) [] string{
 		return []string{}
 	}
 
-	fmt.Println(words)
-	fmt.Println(words[0])
-	fmt.Println(index[words[0]])
+	result := index[words[0]]
 
-	return index[words[0]]
+	for _, word := range words[1:]{
+		result = intersect(result, index[word])
+	}
+	return result
 }
 
 func main(){
@@ -55,8 +56,15 @@ func main(){
 		}
 	}
 
-	results := search(index, "go fast")
-	fmt.Println(results)
+	results := search(index, "go simple")
+
+	for _, id := range results{
+		for _, doc := range docs{
+			if doc.ID == id {
+				fmt.Println(doc.Text)
+			}
+		}
+	}
 
 
 
