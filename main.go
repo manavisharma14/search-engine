@@ -10,6 +10,13 @@ type Document struct{
 	Text	string
 }
 
+type SearchResult struct{
+	ID		string
+	Score	int
+}
+
+func rankResults()
+
 func union (a []string, b []string) [] string {
 	result := [] string{}
 
@@ -87,6 +94,7 @@ func main(){
 	}
 
 	index := make(map[string][]string)
+	scores := make(map[string]int)
 
 	for _, doc := range docs{
 		words := strings.Fields(doc.Text)
@@ -98,6 +106,34 @@ func main(){
 
 	fmt.Println(index["go"])
 
+	for _, id := range index["go"] {
+		scores[id]++
+	}
+
+	fmt.Println(scores)
+
+	results := []SearchResult{}
+
+	for id, score := range scores{
+		results = append(results, SearchResult{
+			ID: id,
+			Score: score
+		})
+	}
+
+	fmt.Println(results)
+	fmt.Println(results[0].Score)
+
+	for i:=0; i<len(results); i++{
+		for j:=i+1; j<len(results); j++{
+			if results[j].Score > results[i].Score {
+				results[i], results[j] = results[j], results[i]
+			}
+		}
+	}
+
+	fmt.Println("Sorted:", results)
+
 	orResults := searchOR(index, "go")
 	// andResults := searchAND(index, "go")
 
@@ -108,15 +144,4 @@ func main(){
 			}
 		}
 	}
-
-	// for _, id := range andResults{
-	// 	for _, doc := range docs{
-	// 		if doc.ID == id {
-	// 			fmt.Println(doc.Text)
-	// 		}
-	// 	}
-	// }
-
-
-
 }
