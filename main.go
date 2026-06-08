@@ -41,7 +41,7 @@ func main(){
 		}
 	}
 
-	results := search(index, "go")
+	results := search(index, "go fast")
 	fmt.Println(results)
 
 
