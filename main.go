@@ -10,6 +10,12 @@ type Document struct{
 	Text	string
 }
 
+func union (a []string, b []string) [] string {
+	result := [] string{}
+
+	return result
+}
+
 func intersect(a []string, b []string) [] string{
 	result := []string{}
 
