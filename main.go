@@ -47,7 +47,7 @@ func rankResults(index map[string][]string, query string) []SearchResult {
 }
 
 func union (a []string, b []string) [] string {
-	result := [] string{}
+	result := [] string{} 
 
 	for _, idA := range a{
 		result = append(result, idA)
