@@ -15,7 +15,36 @@ type SearchResult struct{
 	Score	int
 }
 
-func rankResults()
+func rankResults(index map[string][]string, query string) []SearchResult {
+	words := strings.Fields(query)
+
+	scores := make(map[string]int)
+
+	for _, word := range words{
+		for _, id := range index[word]{
+			scores[id]++
+		}
+	}
+
+	results := []SearchResult{}
+
+	for id, score := range scores {
+		results = append(results, SearchResult{
+			ID: id,
+			Score: score,
+		})
+	}
+
+	// sort here
+	for i:=0; i<len(results); i++{
+		for j:=i+1; j<len(results); j++{
+			if results[j].Score > results[i].Score{
+				results[i], results[j] = results[j], results[i]
+			}
+		}
+	}
+	return results;
+}
 
 func union (a []string, b []string) [] string {
 	result := [] string{}
@@ -94,7 +123,6 @@ func main(){
 	}
 
 	index := make(map[string][]string)
-	scores := make(map[string]int)
 
 	for _, doc := range docs{
 		words := strings.Fields(doc.Text)
@@ -104,35 +132,11 @@ func main(){
 		}
 	}
 
-	fmt.Println(index["go"])
 
-	for _, id := range index["go"] {
-		scores[id]++
-	}
 
-	fmt.Println(scores)
+	rankedResults := rankResults(index, "go fast")
 
-	results := []SearchResult{}
-
-	for id, score := range scores{
-		results = append(results, SearchResult{
-			ID: id,
-			Score: score
-		})
-	}
-
-	fmt.Println(results)
-	fmt.Println(results[0].Score)
-
-	for i:=0; i<len(results); i++{
-		for j:=i+1; j<len(results); j++{
-			if results[j].Score > results[i].Score {
-				results[i], results[j] = results[j], results[i]
-			}
-		}
-	}
-
-	fmt.Println("Sorted:", results)
+	fmt.Println(rankedResults)
 
 	orResults := searchOR(index, "go")
 	// andResults := searchAND(index, "go")
