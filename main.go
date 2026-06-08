@@ -13,6 +13,23 @@ type Document struct{
 func union (a []string, b []string) [] string {
 	result := [] string{}
 
+	for _, idA := range a{
+		result = append(result, idA)
+	}
+
+	for _, idB := range b{
+		found := false
+
+		for _, existingId := range result {
+			if existingId == idB {
+				found = true
+			}
+		}
+		if !found {
+			result = append(result, idB)
+		}
+	}
+
 	return result
 }
 
@@ -30,7 +47,22 @@ func intersect(a []string, b []string) [] string{
 	return result
 }
 
-func search(index map[string][]string, query string) [] string{
+func searchOR(index map[string][]string, query string) [] string{
+	words := strings.Fields(query)
+
+	if len(words) == 0 {
+		return []string{}
+	}
+
+	result := index[words[0]]
+
+	for _, word := range words[1:]{
+		result = union(result, index[word])
+	}
+	return result
+}
+
+func searchAND(index map[string][]string, query string) [] string{
 	words := strings.Fields(query)
 
 	if len(words) == 0 {
@@ -44,6 +76,8 @@ func search(index map[string][]string, query string) [] string{
 	}
 	return result
 }
+
+
 
 func main(){
 	docs:= []Document{
@@ -62,9 +96,18 @@ func main(){
 		}
 	}
 
-	results := search(index, "go simple")
+	orResults := searchOR(index, "go simple")
+	andResults := searchAND(index, "go simple")
 
-	for _, id := range results{
+	for _, id := range orResults{
+		for _, doc := range docs{
+			if doc.ID == id {
+				fmt.Println(doc.Text)
+			}
+		}
+	}
+
+	for _, id := range andResults{
 		for _, doc := range docs{
 			if doc.ID == id {
 				fmt.Println(doc.Text)
