@@ -9,6 +9,11 @@ import ("fmt"
 var index = make(map[string][]string)
 var docs []Document
 
+type PageData struct {
+	Query 		string
+	Results 	[]SearchResult
+}
+
 func helloHandle(w http.ResponseWriter, r *http.Request){
 	tmpl, err := template.ParseFiles("templates/index.html")
 
@@ -16,7 +21,16 @@ func helloHandle(w http.ResponseWriter, r *http.Request){
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return 
 	}
-	tmpl.Execute(w, nil)
+	
+	query := r.URL.Query().Get("q")
+	results := rankResults(index, query)
+
+	data := PageData{
+		Query: query,
+		Results: results,
+	}
+	
+	tmpl.Execute(w, data)
 }
 
 func main(){

@@ -83,9 +83,16 @@ button {
         <h1>🔍 Go Search Engine</h1>
 
         <form>
-            <input name="q" placeholder="Search documents...">
+            <input name="q" value="{{.Query}}" placeholder="Search documents...">
             <button type="submit">Search</button>
         </form>
+
+        {{range .Results}}
+        <div class="result">
+            <div>{{.ID}}</div>
+            <div class="score">Score: {{.Score}}</div>
+        </div>
+        {{end}}
 
     </div>
 </body>
