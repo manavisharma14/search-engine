@@ -9,9 +9,14 @@ import ("fmt"
 var index = make(map[string][]string)
 var docs []Document
 
+type DisplayResult struct {
+	Text		string
+	Score		int	
+}
+
 type PageData struct {
 	Query 		string
-	Results 	[]SearchResult
+	Results 	[]DisplayResult
 }
 
 func helloHandle(w http.ResponseWriter, r *http.Request){
@@ -24,10 +29,22 @@ func helloHandle(w http.ResponseWriter, r *http.Request){
 	
 	query := r.URL.Query().Get("q")
 	results := rankResults(index, query)
+	displayResults := []DisplayResult{}
+
+	for _, result := range results{
+		for _, doc := range docs{
+			if doc.ID == result.ID {
+				displayResults = append(displayResults, DisplayResult{
+					Text: doc.Text,
+					Score: result.Score,
+				})
+			}
+		}
+	}
 
 	data := PageData{
 		Query: query,
-		Results: results,
+		Results: displayResults,
 	}
 	
 	tmpl.Execute(w, data)
