@@ -87,12 +87,17 @@ button {
             <button type="submit">Search</button>
         </form>
 
-        {{range .Results}}
-        <div class="result">
-            <div>{{.Text}}</div>
-            <div class="score">Score: {{.Score}}</div>
-
-        </div>
+        {{if .Results}}
+            {{range .Results}}
+            <div class="result">
+                <div>{{.Text}}</div>
+                <div class="score">Score: {{.Score}}</div>
+            </div>
+            {{end}}
+        {{else}}
+            <div class="result">
+                No result found
+            </div>
         {{end}}
 
     </div>
