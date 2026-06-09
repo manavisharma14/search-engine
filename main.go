@@ -10,16 +10,40 @@ var docs []Document
 
 func helloHandle(w http.ResponseWriter, r *http.Request){
 
+
+	// query := r.URL.Query().Get("q")
+	// results := rankResults(index, query)
+
+	// for _, result := range results {
+	// 	for _, doc := range docs {
+	// 		if doc.ID == result.ID {
+	// 			fmt.Fprintln(w, doc.Text, result.Score)
+	// 		}
+	// 	}
+	// }
+
 	query := r.URL.Query().Get("q")
 	results := rankResults(index, query)
 
+	fmt.Fprintln(w, `
+		<html>
+			<body>
+				<h1>Search engine</h1>
+				<form>
+					<input name="q">
+					<button>Search</button>
+				</form>
+			</body>
+		</html>
+	`)
+
 	for _, result := range results {
-		for _, doc := range docs {
-			if doc.ID == result.ID {
-				fmt.Fprintln(w, doc.Text, result.Score)
-			}
+	for _, doc := range docs {
+		if doc.ID == result.ID {
+			fmt.Fprintln(w, doc.Text, result.Score)
 		}
 	}
+}
 }
 
 func main(){
