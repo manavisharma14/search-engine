@@ -1,0 +1,3 @@
+search engines use inverted indexes
+ranking improves relevance
+query execution can be parallelized
