@@ -1,0 +1,5 @@
+go go go is fast
+go is simple
+search engines use indexes
+distributed systems use sharding
+golang supports concurrency

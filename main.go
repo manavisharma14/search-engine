@@ -91,17 +91,21 @@ func loadDocuments(filename string) []Document{
 	for scanner.Scan() {
 		text := scanner.Text()
 		fmt.Println(text)
+
+		doc := Document{
+		ID: strconv.Itoa(id),
+		Text: text,
+	}
+	documents = append(documents, doc)
+	id++
 	}
 
+	return documents
 }
 
 func main(){
 
-	docs = []Document{
-		{ID: "1", Text: "go go go is fast"},
-		{ID: "2", Text: "go is simple"},
-		{ID: "3", Text: "search engines use indexes"},
-	}
+	docs = loadDocuments("documents.txt")
 
 	for _, doc := range docs{
 		words := strings.Fields(doc.Text)
