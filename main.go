@@ -83,7 +83,6 @@ func loadDocuments(filename string) []Document{
 
 	scanner := bufio.NewScanner(file)
 
-
 	for scanner.Scan() {
 		text := scanner.Text()
 
@@ -92,9 +91,7 @@ func loadDocuments(filename string) []Document{
 		Text: text,
 	}
 	documents = append(documents, doc)
-
 	}
-
 	return documents
 }
 
@@ -108,21 +105,28 @@ func main(){
 	}
 
 	var wg sync.WaitGroup
-
 	docChannel := make(chan []Document)
-
 	docs = []Document{}
 
-	wg.Add(1)
+	for _, file := range files {
+		wg.Add(1)
 
-	go func() {
-		defer wg.Done()
+		go func(filename string){
+			defer wg.Done()
+			loadedDocs := loadDocuments(filename)
+			docChannel <- loadedDocs
+		}("documents/" + file.Name())
+	}
 
-		fmt.Println("worker running")
-	} ()
+	for range files {
+		loadedDocs := <-docChannel
+		docs = append(docs, loadedDocs...)
+	}
+
 	wg.Wait()
 
-	fmt.Println("building index now")
+	fmt.Println("all workers finished")
+	fmt.Println("documents loaded: ", len(docs))
 
 	id := 1
 	for i := range docs {
