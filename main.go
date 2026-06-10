@@ -2,7 +2,6 @@
 package main
 
 import (
-		"bufio"
 		"os"
 		"encoding/json"
 		"fmt"
@@ -72,27 +71,20 @@ func helloHandle(w http.ResponseWriter, r *http.Request){
 }
 
 func loadDocuments(filename string) []Document{
-	file, err := os.Open(filename)
+	data, err := os.ReadFile(filename)
 
 	if err != nil {
 		fmt.Println(err)
 		return nil
 	}
 
-	documents := []Document{}
-
-	scanner := bufio.NewScanner(file)
-
-	for scanner.Scan() {
-		text := scanner.Text()
-
-		doc := Document{
-
-		Text: text,
+	doc := Document{
+		Text: string(data),
 	}
-	documents = append(documents, doc)
-	}
-	return documents
+
+	return []Document{doc}
+
+	
 }
 
 func main(){
@@ -146,8 +138,6 @@ func main(){
 	http.HandleFunc("/search", apiSearchHandle)
 	
 	
-
-	go fmt.Println("hello from goroutine!")
 
 	fmt.Println("server running on :8080")
 
