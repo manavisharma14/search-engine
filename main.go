@@ -37,9 +37,10 @@ func searchAllShards(query string) []SearchResult{
 	allResults := []SearchResult{}
 
 	for _, shard := range shards {
-		shardResults := rankResult(shard.Index, query)
-		allResults := appen(allResults, shardResult...)
+		shardResults := rankResults(shard.Index, query)
+		allResults = append(allResults, shardResults...)
 	}
+	return allResults
 }
 
 func buildDisplayResults(query string) [] DisplayResult{
