@@ -161,11 +161,21 @@ func main(){
 
 	
 
-	for _, doc := range docs{
-		words := strings.Fields(doc.Text)
+	for i:= range shards {
+		for _, doc := range shards[i].Docs {
+			words := strings.Fields(doc.Text)
+			
+			for _, word := range words {
+				shards[i].Index[word] = append(shards[i].Index[word], doc.ID)
+			}
+		}
+	}
 
-		for _, word := range words {
-			index[word] = append(index[word], doc.ID)
+	for i, shard := range shards {
+		fmt.Println("shard", i)
+
+		for word, ids := range shard.Index {
+			fmt.Println(word, "->", ids)
 		}
 	}
 
