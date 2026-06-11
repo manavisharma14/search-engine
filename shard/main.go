@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"encoding/json"
 )
 
 type Document struct{
@@ -35,7 +36,20 @@ func searchHandler(w http.ResponseWriter, r *http.Request){
 		}
 	}
 
-	fmt.Fprintf(w, "found docs")
+	results := []SearchResult{}
+
+	for id, score := range scores {
+		results = append(results, SearchResult{
+			ID: id,
+			Score: score,
+		})
+	}
+
+	fmt.Println(results)
+
+	fmt.Println(scores)
+
+	json.NewEncoder(w).Encode(results)
 }
 
 func main(){
