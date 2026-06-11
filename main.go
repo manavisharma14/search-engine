@@ -44,7 +44,7 @@ func searchAllShards(query string) []SearchResult{
 }
 
 func buildDisplayResults(query string) [] DisplayResult{
-	results := searchAllShards(index, query)
+	results := searchAllShards(query)
 	displayResults := []DisplayResult{}
 
 	for _, result := range results {
