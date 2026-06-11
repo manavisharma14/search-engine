@@ -7,11 +7,11 @@ import (
 
 func searchHandler(w http.ResponseWriter, r *http.Request){
 	query := r.URL.Query().Get("q")
-	fmt.Println(w, "shard received query: %s", query)
+	fmt.Fprintf(w, "shard received query: %s", query)
 }
 
 func main(){
-	http.handleFunc("/search", searchHandler)
+	http.HandleFunc("/search", searchHandler)
 	
 	fmt.Println("shard server running :5001")
 
