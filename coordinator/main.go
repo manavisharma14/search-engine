@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"sync"
 )
 
 type SearchResult struct {
@@ -18,19 +17,34 @@ func main(){
 		"http://localhost:5001/search?q=grpc",
 		"http://localhost:5002/search?q=redis",
 	}
+
+	resultChannel := make(chan []SearchResult)
 	
 	for _, shardURL := range shards {
-		resp, err := http.Get(shardURL)
 
-		if err != nil {
-			fmt.Println(err)
-			continue
-		}
+		go func (url string){
 
-		var results []SearchResult
-		json.NewDecoder(resp.Body).Decode(&results)
-		fmt.Println(results)
+			resp, err := http.Get(url)
+
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+
+			var results []SearchResult
+			json.NewDecoder(resp.Body).Decode(&results)
+
+			resultChannel <- results
+
+		} (shardURL)	
 	}
 
+	allResults := []SearchResult{}
+
+	for range shards {
+		shardResults := <- resultChannel
+		allResults = append(allResults, shardResults...)
+	}
+	fmt.Println(allResults)
 	
 }
