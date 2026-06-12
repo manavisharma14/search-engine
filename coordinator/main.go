@@ -11,6 +11,14 @@ type SearchResult struct {
 	Score int
 }
 
+func searchHandler(w http.ResponseWriter, r *http.Request){
+	query := r.URL.Query().Get("q")
+	results := searchAllShards(query)
+
+	json.NewEncoder(w).Encode(results)
+
+}
+
 func searchAllShards(query string) []SearchResult{
 	shards := []string{
 		"http://localhost:5001",
@@ -53,8 +61,7 @@ func searchAllShards(query string) []SearchResult{
 }
 
 func main(){
-
-	results := searchAllShards("grpc")
-	fmt.Println(results)
 	
+	http.HandleFunc("/search", searchHandler)
+	http.ListenAndServe(":8080", nil)
 }
