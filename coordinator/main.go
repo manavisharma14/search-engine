@@ -12,16 +12,24 @@ type SearchResult struct {
 }
 
 func main(){
-	resp, err := http.Get(
-		"http://localhost:5001/search?q=grpc",
-	)
 
-	if err != nil {
-		fmt.Println(err)
-		return
+	shards := []string{
+		"http://localhost:5001/search?q=grpc",
+		"http://localhost:5002/search?q=redis",
+	}
+	
+	for _, shardURL := range shards {
+		resp, err := http.Get(shardURL)
+
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+
+		var results []SearchResult
+		json.NewDecoder(resp.Body).Decode(&results)
+		fmt.Println(results)
 	}
 
-	var results []SearchResult
-	json.NewDecoder(resp.Body).Decode(&results)
-	fmt.Println(results)
+	
 }
