@@ -10,7 +10,7 @@ import (
 
 type SearchResult struct {
 	ID    string
-	Score int
+	Score float64
 }
 
 type Document struct {
@@ -61,14 +61,26 @@ func buildIndex() {
 }
 
 func searchHandler(w http.ResponseWriter, r *http.Request) {
-	scores := make(map[string]int)
+	scores := make(map[string]float64)
 	query := r.URL.Query().Get("q")
 	words := strings.Fields(query)
 
+	// for _, word := range words {
+	// 	ids := index[word]
+	// 	for _, id := range ids {
+	// 		scores[id]++
+	// 	}
+	// }
+
 	for _, word := range words {
 		ids := index[word]
+
+		if len(ids) == 0 {
+			continue
+		}
+		weight := float64(len(documents)) / float64(len(ids))
 		for _, id := range ids {
-			scores[id]++
+			scores[id] += weight
 		}
 	}
 	fmt.Println(scores)

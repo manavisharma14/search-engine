@@ -75,7 +75,6 @@ func searchAllShards(query string) []SearchResult {
 	fmt.Println("results:", len(allResults))
 
 	fmt.Println("search time:", time.Since(start))
-
 	return allResults
 }
 
