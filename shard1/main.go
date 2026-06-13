@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"math"
 	"net/http"
 	"strconv"
 	"strings"
@@ -81,14 +82,14 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	// }
 
 	for _, word := range words {
-		ids := index[word]
+		docsContainingWord := index[word]
 
-		if len(ids) == 0 {
+		if len(docsContainingWord) == 0 {
 			continue
 		}
-		weight := float64(len(documents)) / float64(len(ids))
+		weight := float64(len(documents)) / float64(len(docsContainingWord))
 
-		for docID, count := range ids {
+		for docID, count := range docsContainingWord {
 			scores[docID] += float64(count) * weight
 		}
 	}
