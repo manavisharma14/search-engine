@@ -71,6 +71,7 @@ func buildIndex() {
 }
 
 func searchHandler(w http.ResponseWriter, r *http.Request) {
+	matchedTerms := make(map[string]int)
 	scores := make(map[string]float64)
 	query := r.URL.Query().Get("q")
 	words := strings.Fields(query)
@@ -95,12 +96,17 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		for docID, count := range docsContainingWord {
 			tf := float64(count)
 			scores[docID] += tf * idf
+			matchedTerms[docID]++
 		}
 	}
 
 	results := []SearchResult{}
 
 	for id, score := range scores {
+
+		if matchedTerms[id] != len(words) {
+			continue
+		}
 		results = append(results, SearchResult{
 			ID:    id,
 			Score: score,
