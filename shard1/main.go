@@ -76,13 +76,6 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query().Get("q")
 	words := strings.Fields(query)
 
-	// for _, word := range words {
-	// 	ids := index[word]
-	// 	for _, id := range ids {
-	// 		scores[id]++
-	// 	}
-	// }
-
 	for _, word := range words {
 		docsContainingWord := index[word]
 
