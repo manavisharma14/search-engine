@@ -1,6 +1,8 @@
 syntax = "proto3";
 package search;
 
+option go_package = "./proto";
+
 message SearchRequest {
     string query = 1;
 }
