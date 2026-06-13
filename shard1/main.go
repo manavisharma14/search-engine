@@ -107,13 +107,13 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 
-	fmt.Println(results)
-
 	fmt.Println(scores)
 
 	sort.Slice(results, func(i, j int) bool {
 		return results[i].Score > results[j].Score
 	})
+
+	fmt.Println(results)
 
 	json.NewEncoder(w).Encode(results)
 }
