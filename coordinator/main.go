@@ -10,7 +10,7 @@ import (
 
 type SearchResult struct {
 	ID    string
-	Score int
+	Score float64
 }
 
 func searchHandler(w http.ResponseWriter, r *http.Request) {

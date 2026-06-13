@@ -20,7 +20,7 @@ type SearchResult struct {
 
 var documents []Document
 
-var index map[string][]string
+var index map[string]map[string]int
 
 func generateDocuments(startID, n int) {
 	keywords := []string{
@@ -37,11 +37,16 @@ func generateDocuments(startID, n int) {
 	}
 
 	for i := startID; i < startID+n; i++ {
+
 		doc := Document{
+
 			ID: strconv.Itoa(i),
 			Text: keywords[i%len(keywords)] + " " +
 				keywords[(i+1)%len(keywords)] + " " +
 				keywords[(i+2)%len(keywords)],
+		}
+		if i == startID {
+			doc.Text = "grpc grpc grpc grpc distributed"
 		}
 
 		documents = append(documents, doc)
@@ -49,13 +54,16 @@ func generateDocuments(startID, n int) {
 }
 
 func buildIndex() {
-	index = make(map[string][]string)
+	index = make(map[string]map[string]int)
 
 	for _, doc := range documents {
 		words := strings.Fields(doc.Text)
 
 		for _, word := range words {
-			index[word] = append(index[word], doc.ID)
+			if index[word] == nil {
+				index[word] = make(map[string]int)
+			}
+			index[word][doc.ID]++
 		}
 	}
 }
@@ -79,8 +87,9 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 		weight := float64(len(documents)) / float64(len(ids))
-		for _, id := range ids {
-			scores[id] += weight
+
+		for docID, count := range ids {
+			scores[docID] += float64(count) * weight
 		}
 	}
 
@@ -102,10 +111,13 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	generateDocuments(1, 50000)
+	fmt.Println(documents[0])
 	buildIndex()
+	fmt.Println("grpc count in doc1:", index["grpc"]["1"])
 
 	fmt.Println("documents:", len(documents))
-	fmt.Println("index terms:", len(index))
+
+	// fmt.Println(index["grpc"])
 
 	http.HandleFunc("/search", searchHandler)
 
